@@ -42,7 +42,7 @@ function onDeviceReady = function() {
         
         window.AssetManager.onReadyCallback(function() {
             $.ajax({ url: 'url_to_manifest_file.json'}).done(function(manifest) {
-                window.AssetManager.addAssets(data.files);
+                window.AssetManager.addAssets(manifest);
             });
         });
         
