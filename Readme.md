@@ -32,7 +32,7 @@ Example configuration:
 function onDeviceReady = function() {
     window.requestFileSystem(window.PERSISTENT, 0, function(fs) {
         window.AssetManager = new AssetManagerClass({
-            filesystem: 'fs',
+            filesystem: fs,
             subdir: 'project_name', // subdirectory on SDCard for data
             filename: 'asset-manager-config.json', // name of config file to be created.
             maxSyncing: 40, // number of maximal parallel http requests for assets
@@ -55,4 +55,27 @@ document.addEventListener('deviceready', onDeviceReady, false);
 Requesting for asset is as simple as calling:
 ```
 window.AssetManager.getAsset( key, instead_url );
+```
+
+### Events
+
+There are several events you can listen to:
+
+**Progress Event**
+
+Fired on each files synced.
+```
+AssetManager.onProgressCallback(function(synced, total) {
+    console.log('Synced files: ' + synced + '. Total files: ' + total);
+});
+```
+
+**End Event**
+
+Fired when all files are synced (notice, that progress event will be also called on such situation, with synced == total)
+
+```
+AssetManager.onEndCallback(function() {
+    console.log('All files are synced');
+});
 ```

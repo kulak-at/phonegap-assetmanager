@@ -4,11 +4,16 @@ var AssetManagerClass = function(config) {
     var config_filename = config.filename;
     
     var clbck = function() { };
+    var onProgressCallback = function(synced, total) { };
+    var onEndCallback = function() { };
     
     var data = {};
     var fs = config.filesystem;
     
     var pass = function() { };
+    
+    var synced_count = 0;
+    var total_count = 0;
     
     var onFail = function() {
         sync();
@@ -18,8 +23,16 @@ var AssetManagerClass = function(config) {
     var manifestFile = function(file) {
         var reader = new FileReader();
         reader.onloadend = function(evt) {
+            synced_count = 0;
+            total_count = 0;
             try {
                 data = JSON.parse(evt.target.result);
+                for(var i in data) {
+                    total_count++;
+                    if(data[i].is_synced)
+                        synced_count++;
+                }
+                
             } catch(e) { };
             
             sync();
@@ -115,6 +128,14 @@ var AssetManagerClass = function(config) {
                                 // done.
                                 data[kkey].is_synced = true;
                                 data[kkey].local_url = url;
+                                synced_count++;
+                                
+                                // on Progress Callback
+                                onProgressCallback(synced_count, total_count);
+                                
+                                if(synced_count == total_count)
+                                    onEndCallback(); // on End Callback
+                                
                                 decrease();
                                 
                             }, function() {
@@ -166,6 +187,7 @@ var AssetManagerClass = function(config) {
                         data[key].md5 = ob.md5;
                         data[key].url = ob.url;
                         data[key].is_synced = false;
+                        synced_count--;
                         // TODO: adding to set or something
                     }
                     
@@ -176,6 +198,7 @@ var AssetManagerClass = function(config) {
                         md5: ob.md5,
                         is_synced: false
                     };
+                    total_count++;
                     // TODO: add to queue or something
                     
                     
@@ -185,6 +208,12 @@ var AssetManagerClass = function(config) {
         },
         onReadyCallback: function(cb) {
             clbck = cb;
+        },
+        onProgressCallback: function(cb) {
+            onProgressCallback = cb;
+        },
+        onEndCallback: function(cb) {
+            onEndCallback = cb;
         }
         
     };
