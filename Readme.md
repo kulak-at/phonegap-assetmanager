@@ -10,7 +10,6 @@ Manifest file that consists of files definition that should be downloaded.
 
 ```
 {
-    files: {
         'key1': {
             'url': 'file_url',
             'md5': 'file_md5'
@@ -20,7 +19,6 @@ Manifest file that consists of files definition that should be downloaded.
             'md5': 'file_md5'
         },
         ...
-    }
 }
 ```
 
