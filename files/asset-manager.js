@@ -204,6 +204,9 @@ var AssetManagerClass = function(config) {
                     
                 }
             }
+            if(synced_count == total_count)
+                onEndCallback();
+            
             sync();
         },
         onReadyCallback: function(cb) {
